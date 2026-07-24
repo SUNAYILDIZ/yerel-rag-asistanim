@@ -1,0 +1,3 @@
+n8n, açık kaynaklı bir iş akışı otomasyon aracıdır. Kullanıcıların kod yazmadan farklı uygulamaları birbirine bağlamasını ve tekrarlayan görevleri otomatikleştirmesini sağlar.
+
+n8n'in en büyük avantajı kendi sunucunda çalıştırılabilmesidir. Bu sayede veriler üçüncü taraf sistemlere gönderilmez ve tam gizlilik kontrolü kullanıcıda kalır.

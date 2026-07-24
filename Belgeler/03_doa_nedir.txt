@@ -1,0 +1,9 @@
+DOA (Depozito Otomasyon Ağı), Türkiye'nin ulusal ambalaj iade sistemidir. 
+0.10 ile 3 litre arasındaki PET şişeler, cam şişeler ve alüminyum kutular 
+sisteme dahildir; her ambalajın üzerinde taklit edilemeyen özel bir DOA 
+barkodu bulunur.
+
+İade ettiğin her ambalaj için 1 TL teşvik bedeli kazanırsın. Bunun için 
+DOA uygulamasını telefona indir, en yakın iade makinesini bul, QR kodu 
+tarat ve ambalajları bırak. Kazandığın para anında e-cüzdanına yüklenir; 
+marketlerde harcayabilir veya banka hesabına aktarabilirsin.
