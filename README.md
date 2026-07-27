@@ -50,20 +50,20 @@ Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları t
    ```bash
    git clone https://github.com/SUNAYILDIZ/yerel-rag-asistanim.git
    cd yerel-rag-asistanim
-
+   ```
 2.**Gerekli kütüphaneleri yükleyin:**
-   Bash
+   ```bash
    pip install -r requirements.txt
-  
+  ```
 3.**Uygulamayı başlatın:**
-   Bash
-   streamlit run week4_app.py
-   
+  ```bash
+  streamlit run week4_app.py
+   ```
 
 ## 📁 Proje Yapısı
 ```text
 Yerel_RAG_Asistanim/
-```
+
 ├── Belgeler/            # RAG sisteminin taranacağı kaynak metinler (.txt)
 ├── chunks.db            # SQLite vektör veritabanı (Parçalanmış metinler ve embedding'ler)
 ├── week2.py             # Temel veri işleme modülü
