@@ -1,68 +1,123 @@
-from foundry_local_sdk import Configuration, FoundryLocalManager
-import sqlite3
-import math
-import json
 import streamlit as st
-def ep_progress_callback(ep_name, percent):
-    print(f"\r📥 [{ep_name}]: {round(percent)}%", end="\r")
-def cosine_similarity(vec_a, vec_b):
-    dot_product = sum(a * b for a, b in zip(vec_a, vec_b))
-    norm_a = math.sqrt(sum(a * a for a in vec_a))
-    norm_b = math.sqrt(sum(b * b for b in vec_b))
-    if norm_a == 0 or norm_b == 0:
-        return 0
-    return dot_product / (norm_a * norm_b)
-def get_top_chunks(conn,embedding_client,query,top_k=3):
-      query_embedding=embedding_client.generate_embeddings([query]).data[0].embedding
-      rows = conn.execute("SELECT id, content, embedding FROM chunks").fetchall()
-      similarities = []
-      for row in rows:
-          chunk_id, content, embedding_json = row
-          chunk_embedding = json.loads(embedding_json)
-          similarity_score = cosine_similarity(query_embedding, chunk_embedding)
-          similarities.append((chunk_id, content, similarity_score))
-         
-      similarities.sort(key=lambda x: x[2], reverse=True)
-      return similarities[:top_k]   
-def answer_query(conn, embedding_client, chat_client, question):
-    top_chunks = get_top_chunks(conn, embedding_client, question, top_k=3)
-    context = "\n".join([f"Chunk {i+1}: {chunk[1]}" for i, chunk in enumerate(top_chunks)])
-    prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
-    response = chat_client.complete_chat([
-        {"role": "system", "content": "You must answer the question using only the context given to you. If the answer is not in the context, say 'I don't know.' Answer in the same language as the question."},
-        {"role": "user", "content": prompt}
-])
+import sqlite3
+import re
+from langdetect import detect, DetectorFactory
+from foundry_local_sdk import Configuration, FoundryLocalManager
+
+# week4.py dosyasından sadece gereken ana parçayı (get_top_chunks) alıyoruz
+from week4 import get_top_chunks
+
+# Dil tespitinin her çalışmada tutarlı (deterministic) olması için seed sabitliyoruz
+DetectorFactory.seed = 0
+
+def detect_language(text):
+    """
+    Kullanıcının girdiği sorunun dilini tespit eder.
+    """
+    try:
+        lang = detect(text)
+        return "tr" if lang == "tr" else "en"
+    except:
+        return "tr"
+
+def format_output(text):
+    """
+    LLM çıktısındaki olası tırnakları temizler ve yapışık kelimeleri ayırır.
+    """
+    cleaned = text.strip()
     
-    return response.choices[0].message.content, top_chunks
+    if cleaned.startswith('"') and cleaned.endswith('"'):
+        cleaned = cleaned[1:-1]
+        
+    cleaned = re.sub(r'([a-zğüşöçı])([A-ZĞÜŞİÖÇ])', r'\1 \2', cleaned)
+    return cleaned
+
+def answer_query_ui(conn, embedding_client, chat_client, question):
+    """
+    Streamlit arayüzüne özel cevap üretici. Kaynakları ekrana basabilmek için
+    top_chunks verisini de döndürür.
+    """
+    # week4.py içindeki fonksiyonu çağırıyoruz
+    top_chunks = get_top_chunks(conn, embedding_client, question, top_k=3)
+    
+    context = "\n\n".join([chunk[1] for chunk in top_chunks])
+    prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
+    
+    system_prompt = (
+        "You are a strict QA assistant. Answer the question using ONLY the provided context.\n"
+        "1. Extract information exactly as written. Do NOT change verb tenses, grammar, or words to fit the user's question.\n"
+        "2. Answer directly and naturally without using internal terms like 'chunk', 'context', or 'document'.\n"
+        "3. Always respond in the SAME language as the user's question.\n"
+        "4. If the context does not contain enough information, respond ONLY with 'Bilmiyorum' (for Turkish) or 'I don't know' (for English)."
+    )
+    
+    response = chat_client.complete_chat([
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": prompt}
+    ])
+    
+    content = format_output(response.choices[0].message.content)
+    is_not_found = "bilmiyorum" in content.lower() or "i don't know" in content.lower()
+    
+    if is_not_found:
+        lang = detect_language(question)
+        if lang == "tr":
+            content = "Aradığınız bilgi belgelerimde bulunamadı. Lütfen farklı bir soru sormayı deneyin."
+        else:
+            content = "The requested information was not found in the documents. Please try asking a different question."
+    
+    return content, top_chunks, is_not_found
+
 @st.cache_resource
 def load_models():
-    FoundryLocalManager.initialize(Configuration(app_name="MyLocalRAGAssistant"))
+    """
+    Uygulama her yenilendiğinde modelleri baştan yüklememek için önbelleğe alır.
+    """
+    try:
+        FoundryLocalManager.initialize(Configuration(app_name="MyLocalRAGAssistant"))
+    except:
+        pass
     manager = FoundryLocalManager.instance
     manager.download_and_register_eps()
     
+    # Embedding Modeli
     embedding_model = manager.catalog.get_model("qwen3-embedding-0.6b")
     embedding_model.download()
     embedding_model.load()
     embedding_client = embedding_model.get_embedding_client()
 
+    # Chat Modeli 
     chat_model = manager.catalog.get_model("qwen2.5-7b")
     chat_model.download()
     chat_model.load()
     chat_client = chat_model.get_chat_client()
     chat_client.settings.max_tokens = 300
+    chat_client.settings.temperature = 0.1 
     
-   
     return embedding_client, chat_client
+
+# Modelleri ve veritabanı bağlantısını başlatıyoruz
 embedding_client, chat_client = load_models()
 conn = sqlite3.connect("chunks.db", check_same_thread=False)
- # kullanıcı bunu görür
+
+# --- Streamlit Arayüzü ---
 st.title("Yerel RAG Asistanım")  
 question = st.text_input("Soru:", key="question")
-if question:
-    content, top_chunks = answer_query(conn, embedding_client, chat_client, question)
+
+cleaned_question = question.strip()
+
+if cleaned_question:
+    content, top_chunks, is_not_found = answer_query_ui(conn, embedding_client, chat_client, cleaned_question)
     st.write(f"Cevap: {content}")
-    st.write("**Kaynaklar:**")
-    for chunk_id, chunk_content, score in top_chunks:
-        if score >0.5:
-           source = chunk_content.split(":")[0]
-           st.write(f"- {source} (skor: {score:.3f})")
+    
+    # Bilgi bulunduysa kaynakları listele
+    if not is_not_found:
+        valid_sources = [c for c in top_chunks if c[2] > 0.5]
+        if valid_sources:
+            st.write("**Kaynaklar:**")
+            seen_sources = set()
+            for chunk_id, chunk_content, score in valid_sources:
+                source_name = chunk_content.split(":")[0].strip()
+                if source_name not in seen_sources:
+                    st.write(f"- {source_name} (skor: {score:.3f})")
+                    seen_sources.add(source_name)
