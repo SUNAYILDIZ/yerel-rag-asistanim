@@ -80,6 +80,6 @@ def get_top_chunks(conn,embedding_client,query,top_k=2):
       similarities.sort(key=lambda x: x[2], reverse=True)
       return similarities[:top_k]   
 query = "Warka water nedir?"
-results = get_top_chunks(conn, embedding_client, query, top_k=2)
+results = get_top_chunks(conn, embedding_client, query, top_k=3)
 for chunk_id, content, score in results:
     print(f"Skor: {score:.3f} | {content[:80]}...")  

@@ -35,14 +35,14 @@ embedding_model.load()
 embedding_client = embedding_model.get_embedding_client()
 
 # Chat modeli
-chat_model = manager.catalog.get_model("phi-3.5-mini")
+chat_model = manager.catalog.get_model("phi-4")
 chat_model.download()
 chat_model.load()
 chat_client = chat_model.get_chat_client()
 chat_client.settings.max_tokens = 300
 conn = sqlite3.connect("chunks.db")
 def answer_query(conn, embedding_client, chat_client, question):
-    top_chunks = get_top_chunks(conn, embedding_client, question, top_k=2)
+    top_chunks = get_top_chunks(conn, embedding_client, question, top_k=3)
     context = "\n".join([f"Chunk {i+1}: {chunk[1]}" for i, chunk in enumerate(top_chunks)])
     prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
     response = chat_client.complete_chat([

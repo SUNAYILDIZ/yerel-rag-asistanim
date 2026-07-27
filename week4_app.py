@@ -12,7 +12,7 @@ def cosine_similarity(vec_a, vec_b):
     if norm_a == 0 or norm_b == 0:
         return 0
     return dot_product / (norm_a * norm_b)
-def get_top_chunks(conn,embedding_client,query,top_k=2):
+def get_top_chunks(conn,embedding_client,query,top_k=3):
       query_embedding=embedding_client.generate_embeddings([query]).data[0].embedding
       rows = conn.execute("SELECT id, content, embedding FROM chunks").fetchall()
       similarities = []
@@ -25,7 +25,7 @@ def get_top_chunks(conn,embedding_client,query,top_k=2):
       similarities.sort(key=lambda x: x[2], reverse=True)
       return similarities[:top_k]   
 def answer_query(conn, embedding_client, chat_client, question):
-    top_chunks = get_top_chunks(conn, embedding_client, question, top_k=2)
+    top_chunks = get_top_chunks(conn, embedding_client, question, top_k=3)
     context = "\n".join([f"Chunk {i+1}: {chunk[1]}" for i, chunk in enumerate(top_chunks)])
     prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
     response = chat_client.complete_chat([
@@ -33,7 +33,7 @@ def answer_query(conn, embedding_client, chat_client, question):
         {"role": "user", "content": prompt}
 ])
     
-    return response.choices[0].message.content
+    return response.choices[0].message.content, top_chunks
 @st.cache_resource
 def load_models():
     FoundryLocalManager.initialize(Configuration(app_name="MyLocalRAGAssistant"))
@@ -45,7 +45,7 @@ def load_models():
     embedding_model.load()
     embedding_client = embedding_model.get_embedding_client()
 
-    chat_model = manager.catalog.get_model("phi-3.5-mini")
+    chat_model = manager.catalog.get_model("qwen2.5-7b")
     chat_model.download()
     chat_model.load()
     chat_client = chat_model.get_chat_client()
@@ -59,6 +59,10 @@ conn = sqlite3.connect("chunks.db", check_same_thread=False)
 st.title("Yerel RAG Asistanım")  
 question = st.text_input("Soru:", key="question")
 if question:
-    answer = answer_query(conn, embedding_client, chat_client, question)
-    st.write(f"Cevap: {answer}")
-
+    content, top_chunks = answer_query(conn, embedding_client, chat_client, question)
+    st.write(f"Cevap: {content}")
+    st.write("**Kaynaklar:**")
+    for chunk_id, chunk_content, score in top_chunks:
+        if score >0.5:
+           source = chunk_content.split(":")[0]
+           st.write(f"- {source} (skor: {score:.3f})")

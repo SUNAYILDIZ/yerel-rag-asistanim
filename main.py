@@ -8,7 +8,7 @@ config = Configuration(app_name="MyLocalRAGAssistant")
 FoundryLocalManager.initialize(config)
 # manager yüklenir ve modelin katalogdan alınması için kullanılır.
 manager = FoundryLocalManager.instance
-model = manager.catalog.get_model("phi-3.5-mini")
+model = manager.catalog.get_model("phi-4")
 manager.download_and_register_eps(progress_callback=ep_progress_callback)
 # Model indirilir ve yüklenir.
 model.download()
