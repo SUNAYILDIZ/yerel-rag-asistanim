@@ -37,43 +37,43 @@ Microsoft AI Innovators Summer Internship programı kapsamında tamamen yerel do
 * Generation (Üretim): Getirilen parçalar bağlam (context) olarak qwen2.5-7b modeline katı sistem promptu ile beslenir, böylece halüsinasyon (uydurma) olmaksızın güvenli ve doğru yanıtlar üretilir.
 ---
 
-## 🛠️ Kullanılan Teknolojiler
-* Arayüz: Streamlit (week4_app.py, @st.cache_resource optimizasyonu)
-
-* Yerel AI Altyapısı: foundry_local_sdk (FoundryLocalManager, Configuration)
-
-* Yapay Zeka Modelleri:
-
-* Chat / Üretim: qwen2.5-7b (temperature=0.1)
-
-* Embedding: qwen3-embedding-0.6b
----
-
+* **Arayüz:** Streamlit (week4_app.py, @st.cache_resource optimizasyonu)
+* **Yerel AI Altyapısı:** `foundry_local_sdk` (`FoundryLocalManager`, `Configuration`)
+* **Yapay Zeka Modelleri:**
+  * **Chat / Üretim:** `qwen2.5-7b` (`temperature=0.1`)
+  * **Embedding:** `qwen3-embedding-0.6b`
 ## 🚀 Kurulum ve Çalıştırma
+
 Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları takip edebilirsiniz:
 
-Depoyu klonlayın:
+1. **Depoyu klonlayın:**
+   ```bash
+   git clone https://github.com/SUNAYILDIZ/yerel-rag-asistanim.git
+   cd yerel-rag-asistanim
+   ```
+ **Gerekli kütüphaneleri yükleyin:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+ **Uygulamayı başlatın:**
+   ```bash
+   streamlit run week4_app.py
+   ```
 
-Bash
-git clone [https://github.com/SUNAYILDIZ/yerel-rag-asistanim.git](https://github.com/SUNAYILDIZ/yerel-rag-asistanim.git)
-cd yerel-rag-asistanim
-Gerekli kütüphaneleri yükleyin:
-
-Bash
-pip install -r requirements.txt
-Uygulamayı başlatın:
-
-Bash
-streamlit run week4_app.py
 ## 📁 Proje Yapısı
-Plaintext
+```text
 Yerel_RAG_Asistanim/
 ├── Belgeler/            # RAG sisteminin taranacağı kaynak metinler (.txt)
 ├── chunks.db            # SQLite vektör veritabanı (Parçalanmış metinler ve embedding'ler)
+├── week2.py             # Temel veri işleme modülü
+├── week3.py             # Gelişmiş veri operasyonları ve chunking modülü
 ├── week4.py             # Veri işleme, chunking, embedding ve benzerlik hesaplama modülü
 ├── week4_app.py         # Streamlit tabanlı ana arayüz, dil tespiti ve UI mantığı
+├── main.py              # Uygulama akışını başlatan ana Python betiği
+├── .gitignore           # Git tarafından takip edilmeyecek dosya ve klasörler
 ├── requirements.txt     # Proje bağımlılıkları ve Python kütüphaneleri
 └── README.md            # Proje dokümantasyonu
+
 📜 Lisans
 Bu proje kişisel ve kurumsal yerel RAG denemeleri için özgürce kullanılabilir.
 
