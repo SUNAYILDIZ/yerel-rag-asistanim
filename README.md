@@ -61,7 +61,7 @@ Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları t
    ```
 
 ## 📁 Proje Yapısı
-```text
+
 Yerel_RAG_Asistanim/
 ├── Belgeler/            # RAG sisteminin taranacağı kaynak metinler (.txt)
 ├── chunks.db            # SQLite vektör veritabanı (Parçalanmış metinler ve embedding'ler)
