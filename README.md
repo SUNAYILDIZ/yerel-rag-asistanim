@@ -28,6 +28,7 @@ Microsoft AI Innovators Summer Internship programı kapsamında tamamen yerel do
      │
      ▼
 [Grounded Yanıt + Kaynak Gösterimi]
+---
 
 * Ingestion (Veri Alımı): Yerel .txt belgeleri okunur, paragraflara (chunk) bölünür ve embedding'leri çıkarılarak chunks.db veritabanına kaydedilir.
 
@@ -35,7 +36,7 @@ Microsoft AI Innovators Summer Internship programı kapsamında tamamen yerel do
 
 * Generation (Üretim): Getirilen parçalar bağlam (context) olarak qwen2.5-7b modeline katı sistem promptu ile beslenir, böylece halüsinasyon (uydurma) olmaksızın güvenli ve doğru yanıtlar üretilir.
 
-🛠️ Kullanılan Teknolojiler
+## 🛠️ Kullanılan Teknolojiler
 * Arayüz: Streamlit (week4_app.py, @st.cache_resource optimizasyonu)
 
 * Yerel AI Altyapısı: foundry_local_sdk (FoundryLocalManager, Configuration)
