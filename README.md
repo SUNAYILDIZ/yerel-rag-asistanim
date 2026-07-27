@@ -28,7 +28,7 @@ Microsoft AI Innovators Summer Internship programı kapsamında tamamen yerel do
      │
      ▼
 [Grounded Yanıt + Kaynak Gösterimi]
----
+```
 
 * Ingestion (Veri Alımı): Yerel .txt belgeleri okunur, paragraflara (chunk) bölünür ve embedding'leri çıkarılarak chunks.db veritabanına kaydedilir.
 
@@ -46,8 +46,9 @@ Microsoft AI Innovators Summer Internship programı kapsamında tamamen yerel do
 * Chat / Üretim: qwen2.5-7b (temperature=0.1)
 
 * Embedding: qwen3-embedding-0.6b
+---
 
-🚀 Kurulum ve Çalıştırma
+## 🚀 Kurulum ve Çalıştırma
 Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları takip edebilirsiniz:
 
 Depoyu klonlayın:
@@ -63,7 +64,7 @@ Uygulamayı başlatın:
 
 Bash
 streamlit run week4_app.py
-📁 Proje Yapısı
+## 📁 Proje Yapısı
 Plaintext
 Yerel_RAG_Asistanim/
 ├── Belgeler/            # RAG sisteminin taranacağı kaynak metinler (.txt)
