@@ -35,6 +35,7 @@ Microsoft AI Innovators Summer Internship programı kapsamında tamamen yerel do
 * Retrieval (Erişim): Kullanıcı bir soru sorduğunda, sistem vektör benzerliği (Cosine Similarity) hesaplayarak en ilgili belge parçalarını getirir.
 
 * Generation (Üretim): Getirilen parçalar bağlam (context) olarak qwen2.5-7b modeline katı sistem promptu ile beslenir, böylece halüsinasyon (uydurma) olmaksızın güvenli ve doğru yanıtlar üretilir.
+---
 
 ## 🛠️ Kullanılan Teknolojiler
 * Arayüz: Streamlit (week4_app.py, @st.cache_resource optimizasyonu)
