@@ -74,8 +74,10 @@ Yerel_RAG_Asistanim/
 ├── .gitignore           # Git tarafından takip edilmeyecek dosya ve klasörler
 ├── requirements.txt     # Proje bağımlılıkları ve Python kütüphaneleri
 └── README.md            # Proje dokümantasyonu
+```
+---
 
-📜 Lisans
+## 📜 Lisans
 Bu proje kişisel ve kurumsal yerel RAG denemeleri için özgürce kullanılabilir.
 
 * Dil Tespiti & Metin İşleme: langdetect (Otomatik Türkçe/İngilizce yönlendirme), re (Normalizasyon)
