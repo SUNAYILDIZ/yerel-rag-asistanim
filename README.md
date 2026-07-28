@@ -134,3 +134,9 @@ Debug testleri sonucunda, sistemin hataları **iki farklı katmanda** ortaya ç�
 
 ## 📜 Lisans
 Bu proje kişisel ve kurumsal yerel RAG denemeleri için özgürce kullanılabilir.
+
+* Dil Tespiti & Metin İşleme: langdetect (Otomatik Türkçe/İngilizce yönlendirme), re (Normalizasyon)
+
+* Veritabanı: SQLite (chunks.db)
+
+* Dil ve Paket Yönetimi: Python, Pip
