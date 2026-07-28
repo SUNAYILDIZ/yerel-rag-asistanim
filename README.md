@@ -76,6 +76,43 @@ Yerel_RAG_Asistanim/
 ```
 > Not: week2-4 dosyaları staj sürecindeki aşamalı geliştirme adımlarını temsil eder. Ana uygulama `week4_app.py`'dir.
 ---
+## 🧪 Test Sonuçları
+
+Sistem, farklı soru kategorileriyle kapsamlı şekilde test edilmiştir.
+
+| # | Soru | Kategori | Beklenen | Sonuç | Not |
+|---|------|----------|----------|-------|-----|
+| 1 | n8n nedir ve ne işe yarar? | Cevaplanabilir | Doğru cevap | ✅ | — |
+| 2 | What is n8n? | Cevaplanabilir (İngilizce) | İngilizce cevap | ✅ | langdetect ile dil tespiti eklendi |
+| 3 | Gizlilik için neden n8n tercih edilmeli? | Çıkarım gerektiren | Doğru cevap | ✅ | — |
+| 4 | Is n8n a paid platform? | Cevaplanamaz | I don't know | ✅ | Kaynak gösterimi düzeltildi |
+| 5 | n8n hangi programlama dillerini destekler? | Cevaplanamaz | Bilmiyorum | ✅ | — |
+| 6 | Warka Water nedir ve günde kaç litre üretir? | Cevaplanabilir | Doğru cevap | ✅ | — |
+| 7 | Warka Water yapımında hangi malzemeler kullanılır? | Cevaplanabilir | Doğru cevap | ✅ | Prompt leakage düzeltildi |
+| 8 | Warka Water ile n8n birlikte kullanılır mı? | Çapraz belge | Bilmiyorum | ✅ | — |
+| 9 | Ambalajları paraya dönüştürmek için ne yapmalıyım? | Cevaplanabilir | Adım adım cevap | ⚠️ | Halüsinasyon tespit edildi, temperature=0.1 ile azaltıldı |
+| 10 | Kazanılan para nakit çekilebilir mi? | Cevaplanabilir | Doğru cevap | ⚠️ | Belge yetersiz — chunk'ta bilgi eksik |
+| 11 | 5 litrelik damacana DOA'ya kabul edilir mi? | Cevaplanabilir | Hayır | ✅ | Sistem doğru reddetti |
+| 12 | n8n ile DOA arasındaki farklar nelerdir? | Çapraz belge | Karşılaştırmalı cevap | ✅ | format_output regex ile yazım hatası düzeltildi |
+| 13 | Doğayı koruyan sistemler nelerdir? | Semantik çıkarım | Warka Water + DOA | ⚠️ | Retrieval skoru 0.5 altında kaldı |
+
+### Tespit Edilen Sorunlar ve Çözümler
+
+| Sorun | Çözüm |
+|-------|-------|
+| Model Çince cevap verdi | `langdetect` kütüphanesi ile dil tespiti eklendi |
+| "Context'te belirtilmiştir" iç bilgisi sızdı | Sistem promptu sıkılaştırıldı (prompt leakage engellendi) |
+| Aynı kaynak iki kez listelendi | `seen_sources` yapısı ile tekrarlayan kaynaklar temizlendi |
+| Model kelime uydurdu (halüsinasyon) | `temperature=0.1` ile yaratıcılık kısıtlandı |
+| "IsePET" gibi yapışık kelimeler oluştu | `format_output` regex fonksiyonu eklendi |
+| Düşük skorlu kaynak gösterildi | Similarity threshold 0.5 uygulandı |
+
+### ⚠️ Bilinen Limitler
+
+- `qwen2.5-7b` modeli bazı sorularda Türkçe gramer hatası yapabilir
+- Belge sayısı arttıkça retrieval kalitesi artacaktır
+- Semantik olarak yakın ama alakasız chunk'lar bazen 0.5 eşiğini geçebilir
+---
 
 ## 📜 Lisans
 Bu proje kişisel ve kurumsal yerel RAG denemeleri için özgürce kullanılabilir.
