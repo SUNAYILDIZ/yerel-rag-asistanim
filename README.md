@@ -112,6 +112,8 @@ Sistem, farklı soru kategorileriyle kapsamlı şekilde test edilmiştir.
 - `qwen2.5-7b` modeli bazı sorularda Türkçe gramer hatası yapabilir
 - Belge sayısı arttıkça retrieval kalitesi artacaktır
 - Semantik olarak yakın ama alakasız chunk'lar bazen 0.5 eşiğini geçebilir
+- - Az sayıda belgeyle çapraz belge karşılaştırma soruları retrieval kalitesini düşürebilir. 
+  Bilgi tabanı genişledikçe bu sorun azalır.
 ---
 
 ## 📜 Lisans
