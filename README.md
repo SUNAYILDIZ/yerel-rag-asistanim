@@ -65,7 +65,6 @@ Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları t
 Yerel_RAG_Asistanim/
 
 ├── Belgeler/            # RAG sisteminin taranacağı kaynak metinler (.txt)
-├── chunks.db            # SQLite vektör veritabanı (Parçalanmış metinler ve embedding'ler)
 ├── week2.py             # Temel veri işleme modülü
 ├── week3.py             # Gelişmiş veri operasyonları ve chunking modülü
 ├── week4.py             # Veri işleme, chunking, embedding ve benzerlik hesaplama modülü
