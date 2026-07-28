@@ -93,7 +93,7 @@ Sistem, farklı soru kategorileriyle kapsamlı şekilde test edilmiştir.
 | 9 | Ambalajları paraya dönüştürmek için ne yapmalıyım? | Cevaplanabilir | Adım adım cevap | ⚠️ | Halüsinasyon tespit edildi, temperature=0.1 ile azaltıldı |
 | 10 | Kazanılan para nakit çekilebilir mi? | Cevaplanabilir | Doğru cevap | ⚠️ | Belge yetersiz — chunk'ta bilgi eksik |
 | 11 | 5 litrelik damacana DOA'ya kabul edilir mi? | Cevaplanabilir | Hayır | ✅ | Sistem doğru reddetti |
-| 12 | n8n ile DOA arasındaki farklar nelerdir? | Çapraz belge | Karşılaştırmalı cevap | ✅ | Belgede doğrudan kıyaslama olmadığı için uydurma yanıt engellendi |
+| 12 | n8n ile DOA arasındaki farklar nelerdir? | Çapraz belge | Karşılaştırmalı cevap | ✅ | Belgede doğrudan kıyaslama olmadığı için uydurma yanıt engellendi|
 | 13 | Doğayı koruyan sistemler nelerdir? | Semantik çıkarım | Warka Water + DOA | ⚠️ | Retrieval skoru 0.5 altında kaldı |
 
 ### Tespit Edilen Sorunlar ve Çözümler
