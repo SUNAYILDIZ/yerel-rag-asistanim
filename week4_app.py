@@ -37,19 +37,32 @@ def answer_query_ui(conn, embedding_client, chat_client, question):
     Streamlit arayüzüne özel cevap üretici. Kaynakları ekrana basabilmek için
     top_chunks verisini de döndürür.
     """
-    # week4.py içindeki fonksiyonu çağırıyoruz
+    # 1. Adım: Sorunun dilini önceden tespit et
+    user_lang = detect_language(question)
+    
     top_chunks = get_top_chunks(conn, embedding_client, question, top_k=6)
-    
     context = "\n\n".join([chunk[1] for chunk in top_chunks])
-    prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
     
+    # 2. Adım: Dile özel katı yönlendirme ekle
+    if user_lang == "en":
+        lang_instruction = (
+            "CRITICAL: The user asked in ENGLISH. Even if the Context is in Turkish, "
+            "you MUST translate the extracted information and answer strictly in ENGLISH."
+        )
+    else:
+        lang_instruction = (
+            "ÖNEMLİ: Kullanıcı soruyu TÜRKÇE sordu. Yanıtı kesinlikle TÜRKÇE veriniz."
+        )
+
     system_prompt = (
-        "You are a strict QA assistant. Answer the question using ONLY the provided context.\n"
-        "1. Extract information exactly as written. Do NOT change verb tenses, grammar, or words to fit the user's question.\n"
+        f"You are a strict QA assistant. Answer the question using ONLY the provided context.\n"
+        f"{lang_instruction}\n"
+        "1. Extract the facts from the context to answer the question. Do NOT hallucinate.\n"
         "2. Answer directly and naturally without using internal terms like 'chunk', 'context', or 'document'.\n"
-        "3. Always respond in the SAME language as the user's question.\n"
-        "4. If the context does not contain enough information, respond ONLY with 'Bilmiyorum' (for Turkish) or 'I don't know' (for English)."
+        "3. If the context does not contain enough information, respond ONLY with 'Bilmiyorum' (for Turkish) or 'I don't know' (for English)."
     )
+    
+    prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
     
     response = chat_client.complete_chat([
         {"role": "system", "content": system_prompt},
@@ -60,8 +73,7 @@ def answer_query_ui(conn, embedding_client, chat_client, question):
     is_not_found = ("bilmiyorum" in content.lower() or "i don't know" in content.lower()) and top_chunks[0][2] < 0.5
     
     if is_not_found:
-        lang = detect_language(question)
-        if lang == "tr":
+        if user_lang == "tr":
             content = "Aradığınız bilgi belgelerimde bulunamadı. Lütfen farklı bir soru sormayı deneyin."
         else:
             content = "The requested information was not found in the documents. Please try asking a different question."
