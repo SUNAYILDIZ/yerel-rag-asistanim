@@ -51,7 +51,7 @@ if __name__ == "__main__":
     embedding_client = embedding_model.get_embedding_client()
 
     # Chat modeli
-    chat_model = manager.catalog.get_model("phi-4")
+    chat_model = manager.catalog.get_model("qwen2.5-7b")
     chat_model.download()
     chat_model.load()
     chat_client = chat_model.get_chat_client()

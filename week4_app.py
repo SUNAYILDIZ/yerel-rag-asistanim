@@ -38,7 +38,7 @@ def answer_query_ui(conn, embedding_client, chat_client, question):
     top_chunks verisini de döndürür.
     """
     # week4.py içindeki fonksiyonu çağırıyoruz
-    top_chunks = get_top_chunks(conn, embedding_client, question, top_k=3)
+    top_chunks = get_top_chunks(conn, embedding_client, question, top_k=6)
     
     context = "\n\n".join([chunk[1] for chunk in top_chunks])
     prompt = f"Context:\n{context}\n\nQuestion: {question}\nAnswer:"
@@ -57,7 +57,7 @@ def answer_query_ui(conn, embedding_client, chat_client, question):
     ])
     
     content = format_output(response.choices[0].message.content)
-    is_not_found = "bilmiyorum" in content.lower() or "i don't know" in content.lower()
+    is_not_found = ("bilmiyorum" in content.lower() or "i don't know" in content.lower()) and top_chunks[0][2] < 0.5
     
     if is_not_found:
         lang = detect_language(question)
