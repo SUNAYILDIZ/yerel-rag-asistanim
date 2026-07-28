@@ -74,6 +74,7 @@ Yerel_RAG_Asistanim/
 ├── requirements.txt     # Proje bağımlılıkları ve Python kütüphaneleri
 └── README.md            # Proje dokümantasyonu
 ```
+> Not: week2-4 dosyaları staj sürecindeki aşamalı geliştirme adımlarını temsil eder. Ana uygulama `week4_app.py`'dir.
 ---
 
 ## 📜 Lisans
