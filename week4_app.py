@@ -177,8 +177,7 @@ conn = sqlite3.connect("chunks.db", check_same_thread=False)
 
 st.title("Yerel RAG Asistanım")
 
-# Form kullanımı: Her tuş vuruşunda değil, yalnızca "Sor" butonuna
-# basıldığında (veya Enter'a basıldığında) script'in çalışmasını sağlar.
+
 with st.form(key="question_form"):
     question = st.text_input("Soru:", key="question")
     submitted = st.form_submit_button("🔍")       
